@@ -6,7 +6,7 @@ Backend for Website.
 
 Run the server:
 
-```
+```bash
 
 $ docker-compose up
 
