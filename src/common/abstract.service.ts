@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
-import { PaginatedResult } from './paginated-result.interface';
 
 @Injectable()
 export abstract class AbstractService {

@@ -1,4 +1,16 @@
-import { BadRequestException, Body, ClassSerializerInterceptor, Controller, Get, NotFoundException, Post, Req, Res, UseGuards, UseInterceptors } from '@nestjs/common';
+import { 
+    BadRequestException, 
+    Body, 
+    ClassSerializerInterceptor, 
+    Controller, 
+    Get, 
+    NotFoundException, 
+    Post, 
+    Req, 
+    Res, 
+    UseGuards, 
+    UseInterceptors 
+} from '@nestjs/common';
 import { Request, Response } from 'express'
 import { UserService } from 'src/user/user.service';
 import * as bcrypt from 'bcryptjs'
@@ -7,6 +19,7 @@ import { JwtService } from '@nestjs/jwt'
 import { RegisterDto } from './models/register.dto';
 import { LoginDto } from './models/login.dto'
 import { AuthGuard } from './auth.guard';
+import { AuthService } from './auth.service';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller()
@@ -14,7 +27,8 @@ export class AuthController {
 
     constructor(
         private userService: UserService,
-        private jwtService: JwtService) {
+        private jwtService: JwtService,
+        private authService: AuthService) {
     }
 
     @Post('register')
@@ -32,16 +46,17 @@ export class AuthController {
     }
 
     @Post('login')
-    async login(@Body() body: LoginDto, @Res({passthrough: true}) response: Response){
-        let user = await this.userService.findOne({email: body.email})
+    async login(
+        @Body() body: LoginDto, 
+        @Res({passthrough: true}) response: Response
+    ){
+        const user = await this.userService.findOne({email: body.email}, ['role'])
         if(!user){
             throw new NotFoundException('User not found')
         }
         if(!await bcrypt.compare(body.password, user.password)){
             throw new BadRequestException('Invalid credentials')
         }
-
-        //let jwt = await this.jwtService.signAsync({id: user.id})
 
         response.cookie('auth', await this.jwtService.signAsync({id: user.id}), {httpOnly: true})
 
@@ -51,8 +66,8 @@ export class AuthController {
     @UseGuards(AuthGuard)
     @Get('user')
     async user(@Req() request: Request){
-        let data = await this.jwtService.verifyAsync(request.cookies['auth'])
-        return this.userService.findOne({id: data.id})
+        const id = await this.authService.userId(request)
+        return this.userService.findOne({id}, ['role'])
     }
 
     @UseGuards(AuthGuard)
