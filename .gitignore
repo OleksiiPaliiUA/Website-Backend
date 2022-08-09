@@ -6,6 +6,9 @@
 # DB
 /.dbdata
 
+# Uploads folder
+/uploads
+
 # Logs
 logs
 *.log

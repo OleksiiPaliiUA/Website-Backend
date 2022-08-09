@@ -6,6 +6,7 @@ import { CommonModule } from './common/common.module';
 import { RoleModule } from './role/role.module';
 import { PermissionModule } from './permission/permission.module';
 import { ProductModule } from './product/product.module';
+import { UploadController } from './product/upload.controller';
 
 @Module({
   imports: [
