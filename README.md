@@ -1,36 +1,25 @@
 ## Description
 
-Backend for Website.
+Backend for Website. 
 
-## Installation
+## Getting started
 
-```bash
-$ npm install
-```
-
-## Running the app
+Run the server:
 
 ```bash
-# development
-$ npm run start
 
-# watch mode
-$ npm run start:dev
+$ docker-compose up
 
-# production mode
-$ npm run start:prod
 ```
 
-## Test
+Open http://localhost:8000 with your browser/Postman to see the result.
 
-```bash
-# unit tests
-$ npm run test
+## Technologies stack
 
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
-```
-
+  * Docker
+  * TypeScript
+  * NestJS
+  * Express
+  * TypeORM
+  * MySQL
+  * bCrypt
