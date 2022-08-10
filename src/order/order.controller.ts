@@ -6,6 +6,7 @@ import { Parser } from 'json2csv'
 import { title } from 'process';
 import { OrderItem } from './models/order-item.entity';
 import { Order } from './models/order.entity';
+import { HasPermission } from 'src/permission/has-permission.decorator';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @UseGuards(AuthGuard)
@@ -15,11 +16,13 @@ export class OrderController {
     }
 
     @Get('orders')
+    @HasPermission('view_orders')
     async all(@Query('page') page: number = 1){
         return this.orderService.paginate(page, ['order_items'])
     }
 
     @Post('export')
+    @HasPermission('view_orders')
     async export(@Res() res: Response){
         const parser = new Parser({
             fields: ['ID', 'Name', 'Email', 'Product Title', 'Price', 'Quantity']
@@ -34,7 +37,7 @@ export class OrderController {
                 ID: o.id,
                 Name: o.name,
                 Email: o.email,
-                'Product title': '',
+                'Product Title': '',
                 Price: '',
                 Quantity: ''
             })
@@ -54,5 +57,11 @@ export class OrderController {
         res.header('Content-Type', 'text/csv')
         res.attachment('orders.csv')
         return res.send(csv)
+    }
+
+    @Get('chart')
+    @HasPermission('view_orders')
+    async chart(){
+        return this.orderService.chart()
     }
 }

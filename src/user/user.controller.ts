@@ -21,6 +21,7 @@ import { AuthGuard } from '../auth/auth.guard';
 import { UserUpdateDto } from './models/user-update.dto';
 import { AuthService } from 'src/auth/auth.service';
 import { Request } from 'express';
+import { HasPermission } from 'src/permission/has-permission.decorator';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @UseGuards(AuthGuard)
@@ -33,11 +34,13 @@ export class UserController {
     }
 
     @Get()
+    @HasPermission('view_users')
     async all(@Query('page') page: number = 1) {
         return this.userService.paginate(page, ['role'])
     }
 
     @Post()
+    @HasPermission('edit_users')
     async create(@Body() body: UserCreateDto): Promise<User> {
         const {role_id, ...data} = body
         return this.userService.create({
@@ -48,6 +51,7 @@ export class UserController {
     }
 
     @Get(':id')
+    @HasPermission('view_users')
     async get(@Param('id') id: number){
         return this.userService.findOne({id}, ['role'])
     }
@@ -79,6 +83,7 @@ export class UserController {
     }
 
     @Put(':id')
+    @HasPermission('edit_users')
     async update(
         @Param('id') id: number,
         @Body() body: UserUpdateDto
@@ -92,6 +97,7 @@ export class UserController {
     }
 
     @Delete(':id')
+    @HasPermission('edit_users')
     async delete(@Param('id') id: number){
         return this.userService.delete(id)
     }
