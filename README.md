@@ -19,6 +19,7 @@ Open http://localhost:8000 with your browser/Postman to see the result.
   * Docker
   * TypeScript
   * NestJS
+  * JwtService
   * Express
   * TypeORM
   * MySQL
