@@ -11,4 +11,11 @@ export class UserService extends AbstractService {
     ){
         super(userRepository)
     }
+
+    async findOne(condition, relations = []): Promise<any> {
+        return this.repository.findOne({
+            where: {email: condition.email}, 
+            relations
+        })
+    }
 }
