@@ -36,6 +36,9 @@ export class AuthController {
         if(body.password != body.password_confirm) {
             throw new BadRequestException('Passwords do not match')
         }
+        if(await this.userService.findOneByEmail({email: body.email}, ['role'])) {
+            throw new BadRequestException('Email is already in use')
+        }
         return this.userService.create({
             first_name: body.first_name,
             last_name: body.last_name,
@@ -50,7 +53,7 @@ export class AuthController {
         @Body() body: LoginDto, 
         @Res({passthrough: true}) response: Response
     ){
-        const user = await this.userService.findOne({email: body.email}, ['role'])
+        const user = await this.userService.findOneByEmail({email: body.email}, ['role'])
         if(!user){
             throw new NotFoundException('User not found')
         }
